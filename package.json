@@ -2,14 +2,7 @@
   "name": "aws-learning-lab",
   "private": true,
   "version": "1.0.0",
-  "workspaces": [
-    "services/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "start": "node scripts/start.js",
-    "build": "npm run build --workspaces",
-    "test": "npm run test --workspaces",
-    "lint": "npm run lint --workspaces"
+  "devDependencies": {
+    "@types/node": "^26.1.0"
   }
 }

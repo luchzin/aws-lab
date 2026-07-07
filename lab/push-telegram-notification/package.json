@@ -1,0 +1,28 @@
+{
+  "name": "push-telegram-notification",
+  "version": "1.0.0",
+  "description": "A sample microservice demonstrating how to automate Telegram notifications using **AWS SNS**, **AWS Lambda**, and the **Telegram Bot API**.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --watch src --ext ts --exec tsx src/local-server.ts",
+    "build": "esbuild src/index.ts --bundle --minify --platform=node --target=node20 --outfile=dist/index.js",
+    "package": "npm run build && rm -f function.zip && cd dist && zip -r ../function.zip index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.0",
+    "dotenv": "^17.4.2",
+    "esbuild": "^0.28.1",
+    "nodemon": "^3.1.14",
+    "tsx": "^4.23.0",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.22.5"
+  }
+}
