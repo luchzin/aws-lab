@@ -1,12 +1,25 @@
 import { saveUser } from "./user";
-import { sendMessage } from "./telegram";
+import {
+  sendMessage,
+  sendAdminOptionList,
+  handleListUsers,
+  handleReadUser,
+  handleDeleteUser,
+  handleUpdateUser,
+  sendUserOptionList,
+  handleUserTranslate,
+  sendLanguageList,
+  promptForTranslationText,
+  handleUserTranslateDirect,
+  sendChatAction,
+} from "./telegram";
+import { SUPPORTED_LANGUAGES } from "./lib/supportLange";
 
 export const handler = async (event: any) => {
   if (!event || !event.body) {
     return { statusCode: 400, body: "Bad Request: Missing body" };
   }
 
-  // 2. Parse the body ONLY if it's a string (fixes local vs production difference)
   const update =
     typeof event.body === "string" ? JSON.parse(event.body) : event.body;
   const message = update.message;
@@ -16,67 +29,105 @@ export const handler = async (event: any) => {
   }
 
   const chatId = message.chat.id;
-  const text = message.text;
+  const adminId = process.env.ADMIN_ID;
+  const text = message.text || "";
+  const isAdmin = chatId.toString() === adminId;
 
   if (text === "/start") {
     await saveUser(message.from);
-
-    await sendMessage(
-      chatId,
-      `👋 Welcome ${message.from.first_name}!
-
-🎧 What would you like to do with audio?`,
-      {
-        keyboard: [
-          [{ text: "🎙 Transcribe Audio" }],
-          [{ text: "🔊 Change Voice" }],
-          [{ text: "✨ Enhance Audio" }],
-          [{ text: "🌐 Translate Audio" }],
-          [{ text: "❓ Help" }],
-        ],
-        resize_keyboard: true,
-      },
-    );
-  } else if (text === "🎙 Transcribe Audio") {
-    await sendMessage(
-      chatId,
-      "📤 Send me an audio file and I will convert it to text.",
-    );
-  } else if (text === "🔊 Change Voice") {
-    await sendMessage(
-      chatId,
-      "🎭 Send an audio file and choose the voice style you want.",
-    );
-  } else if (text === "✨ Enhance Audio") {
-    await sendMessage(
-      chatId,
-      "🎚 Send audio and I will improve clarity and remove noise.",
-    );
-  } else if (text === "🌐 Translate Audio") {
-    await sendMessage(chatId, "🌍 Send audio and select the target language.");
-  } else if (text === "❓ Help") {
-    await sendMessage(
-      chatId,
-      `
-Commands:
-
-🎙 Transcribe Audio
-Convert speech to text
-
-🔊 Change Voice
-Transform voice style
-
-✨ Enhance Audio
-Improve audio quality
-
-🌐 Translate Audio
-Translate speech into another language
-      `,
-    );
   }
 
-  return {
-    statusCode: 200,
-    body: "OK",
-  };
+  if (
+    message.reply_to_message?.text &&
+    message.reply_to_message.text.startsWith("Translate to ")
+  ) {
+    const languageStr = message.reply_to_message.text
+      .split(":\n")[0]
+      .replace("Translate to ", "");
+    await sendChatAction(chatId, "typing");
+    await handleUserTranslateDirect(chatId, languageStr, text, isAdmin);
+    return { statusCode: 200, body: "OK" };
+  }
+  const command = text.startsWith("/") ? text.split(" ")[0] : text;
+  if (command === "🌐 Translate Text") {
+    await sendLanguageList(chatId, isAdmin);
+    return { statusCode: 200, body: "OK" };
+  }
+
+  if (SUPPORTED_LANGUAGES.includes(command)) {
+    await promptForTranslationText(chatId, text);
+    return { statusCode: 200, body: "OK" };
+  }
+
+  if (command === "/translate") {
+    await sendChatAction(chatId, "typing");
+    await handleUserTranslate(chatId, text);
+    return { statusCode: 200, body: "OK" };
+  }
+
+  if (isAdmin) {
+    switch (command) {
+      case "/start":
+      case "🔙 Back to Menu":
+        await sendAdminOptionList(chatId);
+        break;
+
+      case "📖 List Users":
+      case "👥 Users":
+        await handleListUsers(chatId);
+        break;
+
+      case "🔍 Read User Info":
+        await sendMessage(
+          chatId,
+          "To read a user's info, reply with: /user <id>",
+        );
+        break;
+
+      case "/user":
+        await handleReadUser(chatId, text);
+        break;
+
+      case "✏️ Update User":
+        await sendMessage(
+          chatId,
+          "To update a user, reply with: /update_user <id> <field> <value>",
+        );
+        break;
+
+      case "/update_user":
+        await handleUpdateUser(chatId, text);
+        break;
+
+      case "❌ Delete User":
+        await sendMessage(
+          chatId,
+          "To delete a user, reply with: /delete_user <id>",
+        );
+        break;
+
+      case "/delete_user":
+        await handleDeleteUser(chatId, text);
+        break;
+
+      case "❓ Help":
+        await sendMessage(chatId, "Admin can also use these audio features.");
+        break;
+
+      default:
+        await sendAdminOptionList(chatId);
+
+        break;
+    }
+  } else {
+    switch (command) {
+      case "/start":
+        await sendLanguageList(chatId, false);
+        break;
+      default:
+        break;
+    }
+  }
+
+  return { statusCode: 200, body: "OK" };
 };

@@ -47,3 +47,40 @@ export async function getUserInfo(chat_id: string) {
 
   return (rows as any[])[0] ?? null;
 }
+
+export async function getAllUsers() {
+  const [rows] = await pool.execute(
+    `
+    SELECT *
+    FROM bot_users
+    ORDER BY created_at DESC
+    `
+  );
+  return rows as any[];
+}
+
+export async function deleteUser(telegram_id: number | string) {
+  await pool.execute(
+    `
+    DELETE FROM bot_users
+    WHERE telegram_id = ?
+    `,
+    [telegram_id]
+  );
+}
+
+export async function updateUser(telegram_id: number | string, field: string, value: string) {
+  const allowedFields = ['username', 'first_name', 'last_name'];
+  if (!allowedFields.includes(field)) {
+    throw new Error(`Invalid field: ${field}. Allowed fields are ${allowedFields.join(', ')}`);
+  }
+  
+  await pool.execute(
+    `
+    UPDATE bot_users
+    SET ${field} = ?
+    WHERE telegram_id = ?
+    `,
+    [value, telegram_id]
+  );
+}
