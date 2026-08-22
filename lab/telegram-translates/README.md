@@ -1,23 +1,21 @@
 ### `push-telegram-notification`
 
-A sample microservice demonstrating how to automate Telegram notifications using **AWS SNS**, **AWS Lambda**, and the **Telegram Bot API**.
+A sample microservice demonstrating how to automate Telegram notifications using   **AWS Lambda**, *** Gemini Transalte api ***, and the **Telegram Bot API**.
 
 #### Workflow
 
-```text
-Application
-    │
-    ▼
-AWS SNS Topic
+```
+    text
+Application in Bot
     │
     ▼
 AWS Lambda
     │
     ▼
-Telegram Bot API
+Call Gemini translate api
     │
     ▼
-Telegram Chat
+Return transalted text to Telegram Chat
 ```
 
 #### What You'll Learn
