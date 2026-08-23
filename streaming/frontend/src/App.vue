@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { Button } from './components/ui/button';
-
+import ChatLayout from "@/layouts/ChatLayout.vue"
 </script>
 
 <template>
-  <Button> hello kon papap </Button>
+  <ChatLayout />
 </template>
