@@ -24,7 +24,7 @@ const sidebarOpen = ref(true)
           <MessageList />
         </div>
 
-        <ChatInput />
+        <ChatInput ></ChatInput>
       </main>
     </div>
   </TooltipProvider>
