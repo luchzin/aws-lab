@@ -14,6 +14,12 @@ class AuthService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
+    async def confirm_password():
+        return 
+    async def reset_password():
+            return 
+    async def request_reset_password():
+                return 
     async def register(
         self,
         email: str,

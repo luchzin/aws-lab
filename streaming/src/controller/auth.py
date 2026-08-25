@@ -47,7 +47,7 @@ async def confirm_password(
         request.password,
     )
 @router.post("/request-reset-password")
-async def confirm_password(
+async def request_reset_password(
     request: LoginRequest,
     db: AsyncSession = Depends(get_db),
 ):
@@ -58,7 +58,7 @@ async def confirm_password(
         request.password,
     )
 @router.post("/reset-password")
-async def confirm_password(
+async def reset_password(
     request: LoginRequest,
     db: AsyncSession = Depends(get_db),
 ):
