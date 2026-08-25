@@ -35,3 +35,36 @@ async def login(
         request.email,
         request.password,
     )
+@router.post("/confirm-password")
+async def confirm_password(
+    request: LoginRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    service = AuthService(db)
+
+    return await service.login(
+        request.email,
+        request.password,
+    )
+@router.post("/request-reset-password")
+async def confirm_password(
+    request: LoginRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    service = AuthService(db)
+
+    return await service.login(
+        request.email,
+        request.password,
+    )
+@router.post("/reset-password")
+async def confirm_password(
+    request: LoginRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    service = AuthService(db)
+
+    return await service.login(
+        request.email,
+        request.password,
+    )
