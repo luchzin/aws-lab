@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.database import get_db
+from config.database import get_db
 from services.auth import (
     AuthService,
     ConfirmEmailRequest,

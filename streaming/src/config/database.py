@@ -7,11 +7,11 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase
 
-DATABASE_URL = "postgresql+asyncpg://user:password@localhost:5432/streaming"
+from config.config import settings
 
 engine = create_async_engine(
-    DATABASE_URL,
-    echo=True,
+    settings.database_url,
+    echo=settings.db_echo,
 )
 
 AsyncSessionLocal = async_sessionmaker(

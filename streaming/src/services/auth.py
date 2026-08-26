@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from .mail import MailService
 from models.user import User
-from core.security import (
+from config.security import (
     create_access_token,
     create_email_confirmation_token,
     hash_password,
@@ -16,7 +16,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.user import User
-from core.security import (
+from config.security import (
     create_access_token,
     create_password_reset_token,
     verify_password_reset_token,

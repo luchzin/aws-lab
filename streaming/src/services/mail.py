@@ -1,5 +1,5 @@
 from fastapi_mail import FastMail, MessageSchema, MessageType
-from core.mail import mail_config
+from config.mail import mail_config
 
 class MailService:
     def __init__(self):
